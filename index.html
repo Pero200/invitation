@@ -385,7 +385,7 @@
   /* ---------- Venue ---------- */
   .venue{ background: var(--plum-dark); color:var(--cream); overflow:hidden; }
   .venue::before{
-    content:""; position:absolute; inset:0;
+    content:"absolute; inset:0;
     background:
       radial-gradient(circle at 20% 10%, rgba(203,164,103,0.18) 0%, transparent 40%),
       radial-gradient(circle at 80% 90%, rgba(217,162,172,0.18) 0%, transparent 45%);
@@ -451,6 +451,11 @@
 </style>
 </head>
 <body class="locked">
+
+<!-- ملف الصوت الخلفي -->
+<audio id="bg-music" loop>
+  <source src="./bk.mp3" type="audio/mpeg">
+</audio>
 
 <!-- ENVELOPE OPENING SCREEN (double doors) -->
 <div id="envelope-screen">
@@ -665,13 +670,16 @@
   // Envelope opening interaction (double doors)
   const envelopeScreen = document.getElementById('envelope-screen');
   const doorsWrap = document.getElementById('doors-wrap');
+  
   function openInvitation(){
     if(doorsWrap.classList.contains('opening')) return;
     doorsWrap.classList.add('opening');
     
-    // تم تعديل الكود ليعمل مع وسم img أو video بدون التسبب بأخطاء
-    const v = document.querySelector('.hero-video');
-    if(v && typeof v.play === 'function'){ v.play().catch(()=>{}); }
+    // تشغيل ملف الصوت عند فتح الدعوة
+    const bgMusic = document.getElementById('bg-music');
+    if(bgMusic){
+      bgMusic.play().catch(e => console.log("الصوت لم يعمل تلقائياً بسبب إعدادات المتصفح", e));
+    }
     
     setTimeout(() => {
       envelopeScreen.classList.add('hidden-screen');
@@ -681,6 +689,7 @@
     }, 550);
     setTimeout(() => { envelopeScreen.style.display = 'none'; }, 1450);
   }
+  
   doorsWrap.addEventListener('click', openInvitation);
   doorsWrap.addEventListener('keydown', (e) => {
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openInvitation(); }
